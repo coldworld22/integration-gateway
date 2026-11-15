@@ -1,0 +1,9 @@
+gateway:
+  admin-token: test-admin-token
+  stripe:
+    signing-secret: whsec_test_secret
+  meta:
+    app-secret: meta-test-secret
+    verify-token: meta-verify-token
+  outbox:
+    poll-interval: 200ms
