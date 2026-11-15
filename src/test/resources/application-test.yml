@@ -6,4 +6,4 @@ gateway:
     app-secret: meta-test-secret
     verify-token: meta-verify-token
   outbox:
-    poll-interval: 200ms
+    poll-interval: 200

@@ -41,4 +41,5 @@ gateway:
     max-attempts: 8
     base-backoff: 5s
     lease: 60s
-    poll-interval: 1s
+    # Milliseconds between outbox polls.
+    poll-interval: 1000

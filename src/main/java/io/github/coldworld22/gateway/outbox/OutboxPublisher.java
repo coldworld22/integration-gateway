@@ -51,7 +51,7 @@ public class OutboxPublisher {
         this.settings = properties.outbox();
     }
 
-    @Scheduled(fixedDelayString = "${gateway.outbox.poll-interval:1s}")
+    @Scheduled(fixedDelayString = "${gateway.outbox.poll-interval:1000}")
     public void publishDue() {
         for (int i = 0; i < settings.batchSize(); i++) {
             InboundEvent event = claimNext();
