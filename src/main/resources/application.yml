@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: integration-gateway
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/gateway}
+      auto-index-creation: true
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+        delivery.timeout.ms: 15000
+        request.timeout.ms: 10000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+gateway:
+  topic: integration.events.v1
+  # Empty disables the admin endpoints.
+  admin-token: ${GATEWAY_ADMIN_TOKEN:}
+  stripe:
+    signing-secret: ${STRIPE_WEBHOOK_SECRET}
+    tolerance: 5m
+  meta:
+    app-secret: ${META_APP_SECRET}
+    verify-token: ${META_VERIFY_TOKEN}
+  outbox:
+    batch-size: 50
+    max-attempts: 8
+    base-backoff: 5s
+    lease: 60s
+    poll-interval: 1s
