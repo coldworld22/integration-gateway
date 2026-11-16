@@ -33,6 +33,7 @@ services:
       META_APP_SECRET: ${META_APP_SECRET:?Set it in .env}
       META_VERIFY_TOKEN: ${META_VERIFY_TOKEN:?Set it in .env}
       GATEWAY_ADMIN_TOKEN: ${GATEWAY_ADMIN_TOKEN:-}
+      EXAMPLE_CONSUMER_ENABLED: "true"
     ports:
       - "8080:8080"
 

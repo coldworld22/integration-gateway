@@ -103,6 +103,18 @@ curl -H "X-Admin-Token: change-me" "http://localhost:8080/admin/events?status=DE
 curl -X POST -H "X-Admin-Token: change-me" http://localhost:8080/admin/events/<id>/replay
 ```
 
+## Consuming events safely
+
+Delivery is at-least-once, so every consumer must treat a repeated message as a no-op. [`IdempotentPaymentConsumer`](src/main/java/io/github/coldworld22/gateway/example/IdempotentPaymentConsumer.java) shows the pattern with Stripe payments:
+
+- **The dedupe key lives with the data.** Each payment is stored with the message key (`stripe:evt_…`) under a unique index. A second copy of the message hits the index and is skipped. There's no separate "processed messages" table that could be updated without the payment, or the other way round.
+- **Money is stored in minor units** (halalas, cents) as integers, exactly as Stripe sends it. No floating point.
+- **Failures don't block the queue.** A transient error is retried twice; then the message moves to `integration.events.v1.DLT` with the exception in its headers. A message that can't be parsed goes there immediately, because retrying won't fix it.
+
+Tests prove it: the same message sent twice gives one payment, a Stripe webhook retried end to end gives one payment, other event types are ignored, and a malformed message lands on the dead-letter topic.
+
+Run it with `EXAMPLE_CONSUMER_ENABLED=true`. In a real system this consumer would be its own service with its own database; it lives here to keep the example in one place.
+
 ## API
 
 | Method | Path | What |
