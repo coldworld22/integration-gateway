@@ -1,4 +1,6 @@
 gateway:
+  example-consumer:
+    enabled: true
   admin-token: test-admin-token
   stripe:
     signing-secret: whsec_test_secret

@@ -15,6 +15,10 @@ spring:
         enable.idempotence: true
         delivery.timeout.ms: 15000
         request.timeout.ms: 10000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
 
 management:
   endpoints:
@@ -36,6 +40,10 @@ gateway:
   meta:
     app-secret: ${META_APP_SECRET}
     verify-token: ${META_VERIFY_TOKEN}
+  # Example downstream consumer that records Stripe payments idempotently (see README).
+  example-consumer:
+    enabled: ${EXAMPLE_CONSUMER_ENABLED:false}
+    group-id: payments-example
   outbox:
     batch-size: 50
     max-attempts: 8

@@ -30,39 +30,15 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.kafka.KafkaContainer;
 
 /** Runs the whole gateway against real MongoDB and Kafka started by Testcontainers. */
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
-class GatewayIntegrationTest {
-
-    static final MongoDBContainer MONGO = new MongoDBContainer("mongo:7.0");
-    static final KafkaContainer KAFKA = new KafkaContainer("apache/kafka:3.8.0");
-
-    static {
-        MONGO.start();
-        KAFKA.start();
-    }
-
-    @DynamicPropertySource
-    static void infrastructure(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", () -> MONGO.getReplicaSetUrl("gateway"));
-        registry.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
-    }
+class GatewayIntegrationTest extends ContainersTest {
 
     static KafkaConsumer<String, String> consumer;
 
